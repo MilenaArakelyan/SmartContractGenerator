@@ -1,0 +1,11 @@
+﻿@page "/supply-chain-contract"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@using ProjectS5.Web.Components.Layout
+@inject IJSRuntime JSRuntime
+
+<h2 class="page-title">Supply Chain Management Contract Creation</h2>
+
+<CodeSnippet CodeText="@SupplyChainContractModel.Code" />
+
+<ChatSections />

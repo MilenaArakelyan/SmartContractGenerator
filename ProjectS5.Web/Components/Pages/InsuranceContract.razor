@@ -1,0 +1,11 @@
+﻿@page "/insurance-contract"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@using ProjectS5.Web.Components.Layout
+@inject IJSRuntime JSRuntime
+
+<h2 class="page-title">Insurance and Claims Contract Creation</h2>
+
+<CodeSnippet CodeText="@InsuranceContractModel.Code" />
+
+<ChatSections />

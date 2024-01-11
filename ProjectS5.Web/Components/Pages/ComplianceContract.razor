@@ -1,0 +1,11 @@
+﻿@page "/compliance-contract"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@using ProjectS5.Web.Components.Layout
+@inject IJSRuntime JSRuntime
+
+<h2 class="page-title">Customs and Compliance Contract Creation</h2>
+
+<CodeSnippet CodeText="@ComplianceContractModel.Code" />
+
+<ChatSections />

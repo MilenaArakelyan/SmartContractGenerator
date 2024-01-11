@@ -1,0 +1,122 @@
+﻿@page "/register"
+@layout AuthLayout
+@rendermode InteractiveServer
+@using ProjectS5.Core.Auth
+@using ProjectS5.Core.Users.Models
+@using ProjectS5.Web.Components.Layout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<div class="login-container">
+    <div class="login-box" style="width: 400px">
+        @if (!showOTPConfirmation)
+        {
+            <h2 style="padding-bottom: 5px">Register</h2>
+            <EditForm Model="@userModel" OnValidSubmit="@HandleRegister" FormName="register">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    @* <label for="fname">User Name:</label> *@
+                    <InputText placeholder="User Name" @bind-Value="userModel.Username" id="fname" class="form-control" />
+                    <ValidationMessage For="@(() => userModel.Username)" />
+                </div>
+                <div class="form-group">
+                    @* <label for="email">Email:</label> *@
+                    <InputText placeholder="Email" id="email" class="form-control" @bind-Value="userModel.Email" />
+                    <ValidationMessage For="@(() => userModel.Email)" />
+                </div>
+                <div class="form-group">
+                    @* <label for="password">Password:</label> *@
+                    <InputText placeholder="Password" id="password" class="form-control" @bind-Value="userModel.Password" type="password" />
+                    <ValidationMessage For=@(() => userModel.Password) />
+                </div>
+                <div class="form-group">
+                    @* <label for="confirmPassword">Confirm Password:</label> *@
+                    <InputText placeholder="Confirm Password" id="confirmPassword" class="form-control" @bind-Value="userModel.ConfirmPassword" type="password" />
+                    <ValidationMessage For=@(() => userModel.ConfirmPassword) />
+                </div>
+
+                <button style="margin-bottom: 10px; margin-left: 38%" type="submit" class="btn btn-primary">Register</button>
+
+                @if (error is not null)
+                {
+                    <br />
+                    foreach (var msg in error)
+                    {
+                        <label class="text-danger">@msg</label>
+                        <br />
+                    }
+                }
+
+                <h6 class="font-weight-normal text-center">Already have an account?</h6>
+                <NavLink href="login">
+                    <h6 class="font-weight-normal text-center">Click here to login</h6>
+                </NavLink>
+            </EditForm>
+        }
+        else
+        {
+            <h2 style="padding-bottom: 5px; margin-left: 45px">Email Verification</h2>
+
+            <div class="form-group" style="text-align: center; width: 100%; margin: 0">
+                <label style="padding: 10px" for="email">We have sent OTP to your email</label>
+                <InputNumber placeholder="Write OTP here ..." id="email" class="form-control" @bind-Value="otp" />
+                @if (error is not null)
+                {
+                    <label class="text-danger">@error[0]</label>
+                }
+            </div>
+            <br />
+            <div style="text-align: center">
+                <button type="submit" class="btn btn-primary otp-btn" @onclick="VerifyOtp">Verify</button>
+                <button type="submit" class="btn btn-secondary otp-btn" @onclick="SendAgain">Resend</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    RegisterUserModel userModel = new();
+    List<string> error { get; set; }
+    private int? otp;
+    private bool showOTPConfirmation = false;
+
+    private async Task HandleRegister(EditContext editContext)
+    {
+        error = null;
+        try
+        {
+            await authStateProvider.Register(userModel);
+            await authStateProvider.SendOtpAsync(userModel.Email);
+            showOTPConfirmation = true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message.Split(',').ToList();
+        }
+    }
+
+    private async Task SendAgain()
+    {
+        error = null;
+        await authStateProvider.SendOtpAsync(userModel.Email);
+    }
+
+    private void VerifyOtp()
+    {
+        if (!otp.HasValue || otp.Value <= 100000 || otp.Value >= 999999)
+        {
+            error = ["OTP should be 6 digit number"];
+            return;
+        }
+        var c = authStateProvider.VerifyUserOtp(userModel.Email, otp.Value);
+        if (c)
+        {
+            navigationManager.NavigateTo("");
+        }
+        else
+        {
+            error = ["Invalid OTP"];
+        }
+    }
+}

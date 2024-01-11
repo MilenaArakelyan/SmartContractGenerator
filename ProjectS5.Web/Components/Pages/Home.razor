@@ -1,0 +1,40 @@
+﻿@page "/"
+@using ProjectS5.Core.Auth
+@rendermode InteractiveServer
+@inject CustomStateProvider authStateProvider
+@inject NavigationManager navigationManager
+
+@* <AuthorizeView>
+    <Authorized> *@
+        <div class="contracts">
+            <NavLink class="contract-item contract-item1" href="payment-form">
+                <div class="contract-image contract-image1"></div>
+                <div class="contract-content">
+                    <h5>Payments and Invoices</h5>
+                    <p class="contract-description">Automate billing with smart contracts that manage invoices and payments securely.</p>
+                </div>
+            </NavLink>
+            <NavLink class="contract-item contract-item2" href="supply-chain-form">
+                <div class="contract-image contract-image2"></div>
+                <div class="contract-content">
+                    <h5>Supply chain management</h5>
+                    <p class="contract-description">Track goods from origin to delivery and ensure contract compliance in the supply chain.</p>
+                </div>
+            </NavLink>
+            <NavLink class="contract-item contract-item3" href="compliance-form">
+                <div class="contract-image contract-image3"></div>
+                <div class="contract-content">
+                    <h5>Customs and Compliance</h5>
+                    <p class="contract-description">Simplify customs clearance with contracts that enforce regulatory compliance and duties.</p>
+                </div>
+            </NavLink>
+            <NavLink class="contract-item contract-item4" href="insurance-form">
+                <div class="contract-image contract-image4"></div>
+                <div class="contract-content">
+                    <h5>Insurance and Claims</h5>
+                    <p class="contract-description">Streamline claims processing with transparent and enforceable insurance contract terms.</p>
+                </div>
+            </NavLink>
+        </div>
+@*     </Authorized>
+</AuthorizeView> *@

@@ -1,0 +1,107 @@
+﻿@page "/login"
+@layout AuthLayout
+@rendermode InteractiveServer
+@using ProjectS5.Core.Auth
+@using ProjectS5.Core.Users.Models
+@using ProjectS5.Web.Components.Layout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<div class="login-container">
+    <div class="login-box">
+        @if (!showOTPConfirmation)
+        {
+            <h2 style="padding-bottom: 5px">Login</h2>
+            <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    @* <label for="email">Email:</label> *@
+                    <InputText placeholder="Email" id="email" class="form-control" @bind-Value="loginModel.Email" />
+                    <ValidationMessage For="@(() => loginModel.Email)" />
+                </div>
+
+                <div class="form-group">
+                    @* <label for="password">Password:</label> *@
+                    <InputText placeholder="Password" id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+                    <ValidationMessage For="@(() => loginModel.Password)" />
+                </div>
+
+                @if (error is not null)
+                {
+                    <label class="text-danger">@error</label>
+                    <br />
+                }
+                <button style="margin-left: 38%; margin-bottom: 10px" type="submit" class="btn btn-primary">Login</button>
+            </EditForm>
+            <div class="register-prompt">
+                <span>Don't have an account?</span>
+                <a href="register">Create account</a>
+            </div>
+        }
+        else
+        {
+            <h2 style="padding-bottom: 5px">Two Factor Authentication</h2>
+
+            <div class="form-group" style="text-align: center; width: 100%; margin: 0">
+                <label style="padding: 10px" for="email">We have sent OTP to your email</label>
+                <InputNumber placeholder="Write OTP here ..." id="email" class="form-control" @bind-Value="otp" />
+                @if (error is not null)
+                {
+                    <label class="text-danger">@error</label>
+                }
+            </div>
+            <br />
+            <div style="text-align: center">
+                <button type="submit" class="btn btn-primary otp-btn" @onclick="VerifyOtp">Verify</button>
+                <button type="submit" class="btn btn-secondary otp-btn" @onclick="SendAgain">Resend</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private LoginRequestModel loginModel = new();
+    string error { get; set; }
+    private int? otp;
+    private bool showOTPConfirmation = false;
+
+    private async Task HandleLogin()
+    {
+        error = null;
+        try
+        {
+            await authStateProvider.Login(loginModel);
+            await authStateProvider.SendOtpAsync(loginModel.Email);
+            showOTPConfirmation = true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    private async Task SendAgain()
+    {
+        error = null;
+        await authStateProvider.SendOtpAsync(loginModel.Email);
+    }
+
+    private void VerifyOtp()
+    {
+        if (!otp.HasValue || otp.Value <= 100000 || otp.Value >= 999999)
+        {
+            error = "OTP should be 6 digit number";
+            return;
+        }
+        var c = authStateProvider.VerifyUserOtp(loginModel.Email, otp.Value);
+        if (c)
+        {
+            navigationManager.NavigateTo("");
+        }
+        else
+        {
+            error = "Invalid OTP";
+        }
+    }
+}

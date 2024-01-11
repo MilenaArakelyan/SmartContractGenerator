@@ -1,0 +1,60 @@
+﻿@page "/supply-chain-form"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@inject NavigationManager navigationManager
+
+@if (!showProgressBar)
+{
+    <div class="contract-form">
+        <h5>Custom Smart Contract Creation</h5>
+        <div class="form-instructions">
+            <p>Please provide the details requested below to tailor your smart contract for supply chain management.</p>
+        </div>
+        <br />
+        <div style="width: 100%">
+            <EditForm Model="@contractModel" OnValidSubmit="StartProgress" FormName="payment-contract">
+                <DataAnnotationsValidator />
+
+                <div class="form-group customize">
+                    <label for="clientAddress">Item ID:</label>
+                    <InputText id="clientAddress" class="form-control" @bind-Value="contractModel.ItemId" />
+                    <ValidationMessage For="@(() => contractModel.ItemId)" />
+                </div>
+
+                <div class="form-group customize">
+                    <label for="invoiceId">Item Name:</label>
+                    <InputText id="invoiceId" class="form-control" @bind-Value="contractModel.ItemName" />
+                    <ValidationMessage For="@(() => contractModel.ItemName)" />
+                </div>
+
+                <div class="form-group customize">
+                    <label for="invoiceId">The origin of the item:</label>
+                    <InputText id="invoiceId" class="form-control" @bind-Value="contractModel.Origin" />
+                    <ValidationMessage For="@(() => contractModel.Origin)" />
+                </div>
+
+                <div class="form-group customize" style="margin-bottom: 20px">
+                    <label for="invoiceId">Ethereum Address:</label>
+                    <InputText id="invoiceId" class="form-control" @bind-Value="contractModel.EthAddress" />
+                    <ValidationMessage For="@(() => contractModel.EthAddress)" />
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin: auto; width: auto">Generate</button>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <LoadingComponent RedirectPage="supply-chain-contract" />
+}
+
+@code {
+    SupplyChainContractModel contractModel = new();
+    private bool showProgressBar = false;
+
+    private void StartProgress()
+    {
+        showProgressBar = true;
+    }
+}

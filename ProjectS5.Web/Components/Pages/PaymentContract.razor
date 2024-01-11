@@ -1,0 +1,11 @@
+﻿@page "/payment-contract"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@using ProjectS5.Web.Components.Layout
+@inject IJSRuntime JSRuntime
+
+<h2 class="page-title">Payment and Invoices Contract Creation</h2>
+
+<CodeSnippet CodeText="@PaymentContractModel.Code" />
+
+<ChatSections />

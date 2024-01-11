@@ -1,0 +1,139 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div style="text-align: center">
+    <button @onclick="ConnectWallet" style="font-size: 20px; margin-bottom: 15px" class="btn btn-primary" type="submit">Deploy</button>
+</div>
+
+<hr />
+
+<h2 style="text-align: center; margin-bottom: 25px">Frequently asked questions</h2>
+<div class="expandable-sections">
+    <div class="section">
+        <div class="section-header" @onclick="() => ToggleSection(question1)">
+            <h6>Are these contracts legally binding? <span class="arrow">@GetArrow(question1)</span></h6>
+        </div>
+        @if (IsSectionVisible(question1))
+        {
+            <div class="content">
+                <p>Yes, smart contracts are legally binding in many jurisdictions. However, we recommend consulting with a legal professional to ensure that your contract meets all necessary legal requirements for your specific situation.</p>
+            </div>
+        }
+    </div>
+    <div class="section">
+        <div class="section-header" @onclick="() => ToggleSection(question2)">
+            <h6>Can I edit a contract after generating it? <span class="arrow">@GetArrow(question2)</span></h6>
+        </div>
+        @if (IsSectionVisible(question2))
+        {
+            <div class="content">
+                <p>Once a smart contract is deployed on the blockchain, it cannot be altered. However, before deployment, you have the opportunity to review and edit your contract details within our platform.</p>
+            </div>
+        }
+    </div>
+    <div class="section">
+        <div class="section-header" @onclick="() => ToggleSection(question3)">
+            <h6>How secure is my information and the contract details? <span class="arrow">@GetArrow(question3)</span></h6>
+        </div>
+        @if (IsSectionVisible(question3))
+        {
+            <div class="content">
+                <p>Security is our top priority. Your information and contract details are encrypted and securely stored. Blockchain technology also ensures that once a contract is deployed, it cannot be tampered with.</p>
+            </div>
+        }
+    </div>
+    <div class="section">
+        <div class="section-header" @onclick="() => ToggleSection(question4)">
+            <h6>What happens if the terms of the contract are not met? <span class="arrow">@GetArrow(question4)</span></h6>
+        </div>
+        @if (IsSectionVisible(question4))
+        {
+            <div class="content">
+                <p>Smart contracts are executed automatically based on the coded terms. If terms are not met, the contract logic will determine the outcome, such as releasing funds to the appropriate party or signaling a breach of contract.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string visibleSection = "";
+    private string question1 = nameof(question1);
+    private string question2 = nameof(question2);
+    private string question3 = nameof(question3);
+    private string question4 = nameof(question4);
+
+    private void ToggleSection(string section)
+    {
+        visibleSection = visibleSection == section ? "" : section;
+    }
+
+    private bool IsSectionVisible(string section)
+    {
+        return visibleSection == section;
+    }
+
+    private string GetArrow(string section)
+    {
+        return IsSectionVisible(section) ? "▲" : "▼";
+    }
+
+    private async Task ConnectWallet()
+    {
+        var isMetaMaskInstalled = await JSRuntime.InvokeAsync<bool>("isMetaMaskInstalled");
+        if (isMetaMaskInstalled)
+        {
+            var account = await JSRuntime.InvokeAsync<string>("connectMetaMask");
+            if (!string.IsNullOrEmpty(account))
+            {
+                Console.WriteLine($"Connected account: {account}");
+                var abi = @"[
+	{
+		""inputs"": [],
+		""name"": ""get"",
+		""outputs"": [
+			{
+				""internalType"": ""uint256"",
+				""name"": """",
+				""type"": ""uint256""
+			}
+		],
+		""stateMutability"": ""view"",
+		""type"": ""function""
+	},
+	{
+		""inputs"": [
+			{
+				""internalType"": ""uint256"",
+				""name"": ""x"",
+				""type"": ""uint256""
+			}
+		],
+		""name"": ""set"",
+		""outputs"": [],
+		""stateMutability"": ""nonpayable"",
+		""type"": ""function""
+	}
+]";
+                var bytecode = "608060405234801561000f575f80fd5b506101438061001d5f395ff3fe608060405234801561000f575f80fd5b5060043610610034575f3560e01c806360fe47b1146100385780636d4ce63c14610054575b5f80fd5b610052600480360381019061004d91906100ba565b610072565b005b61005c61007b565b60405161006991906100f4565b60405180910390f35b805f8190555050565b5f8054905090565b5f80fd5b5f819050919050565b61009981610087565b81146100a3575f80fd5b50565b5f813590506100b481610090565b92915050565b5f602082840312156100cf576100ce610083565b5b5f6100dc848285016100a6565b91505092915050565b6100ee81610087565b82525050565b5f6020820190506101075f8301846100e5565b9291505056fea2646970667358221220cc8f1d6b8dd54538261624e9e1b93824bc1f73118163589c9b0c04855963d86a64736f6c63430008160033";
+                var contractAddress = await JSRuntime.InvokeAsync<string>("deployContract", abi, bytecode, account);
+
+                // Contract address will be null if deployment failed
+                if (!string.IsNullOrEmpty(contractAddress))
+                {
+                    Console.WriteLine($"Contract deployed at address: {contractAddress}");
+                }
+                else
+                {
+                    Console.WriteLine("Contract deployment failed.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Failed to connect to MetaMask.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("MetaMask is not installed.");
+        }
+    }
+}

@@ -1,0 +1,26 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="code-container">
+    <button class="copy-button" @onclick="CopyToClipboard">Copy</button>
+    <pre style="font-size: 14px">
+    <code class="language-solidity">@((MarkupString)CodeText)</code>
+    </pre>
+</div>
+
+@code {
+    [Parameter]
+    public string CodeText { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("Prism.highlightAll");
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("copyToClipboard");
+    }
+}

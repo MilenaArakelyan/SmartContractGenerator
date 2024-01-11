@@ -1,0 +1,60 @@
+﻿@page "/payment-form"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@inject NavigationManager navigationManager
+
+@if (!showProgressBar)
+{
+    <div class="contract-form">
+        <h5>Custom Smart Contract Creation</h5>
+        <div class="form-instructions">
+            <p>Please provide the details requested below to tailor your smart contract for payments and invoices.</p>
+        </div>
+        <br />
+        <div style="width: 100%">
+            <EditForm Model="@contractModel" OnValidSubmit="StartProgress" FormName="payment-contract">
+                <DataAnnotationsValidator />
+
+                <div class="form-group customize">
+                    <label for="clientAddress">Ethereum Address:</label>
+                    <InputText id="clientAddress" class="form-control" @bind-Value="contractModel.EthAddress" />
+                    <ValidationMessage For="@(() => contractModel.EthAddress)" />
+                </div>
+
+                <div class="form-group customize">
+                    <label for="invoiceId">Invoice ID:</label>
+                    <InputText id="invoiceId" class="form-control" @bind-Value="contractModel.InvoiceId" />
+                    <ValidationMessage For="@(() => contractModel.InvoiceId)" />
+                </div>
+
+                <div class="form-group customize">
+                    <label for="invoiceId">Invoice Amount: (GWEI)</label>
+                    <InputNumber id="invoiceId" class="form-control" @bind-Value="contractModel.Amount" />
+                    <ValidationMessage For="@(() => contractModel.Amount)" />
+                </div>
+
+                <div class="form-group customize" style="margin-bottom: 20px">
+                    <label for="invoiceId">Invoice Description:</label>
+                    <InputTextArea id="invoiceId" class="form-control" @bind-Value="contractModel.InvoiceDescription" />
+                    <ValidationMessage For="@(() => contractModel.InvoiceDescription)" />
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin: auto; width: auto">Generate</button>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <LoadingComponent RedirectPage="payment-contract"/>
+}
+
+@code {
+    PaymentContractModel contractModel = new();
+    private bool showProgressBar = false;
+
+    private void StartProgress()
+    {
+        showProgressBar = true;
+    }
+}

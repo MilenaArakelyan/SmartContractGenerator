@@ -1,0 +1,60 @@
+﻿@page "/compliance-form"
+@rendermode InteractiveServer
+@using ProjectS5.Core.Contracts.Models
+@inject NavigationManager navigationManager
+
+@if (!showProgressBar)
+{
+    <div class="contract-form">
+        <h5>Custom Smart Contract Creation</h5>
+        <div class="form-instructions">
+            <p>Please provide the details requested below to tailor your smart contract for customs and compliance.</p>
+        </div>
+        <br />
+        <div style="width: 100%">
+            <EditForm Model="@contractModel" OnValidSubmit="StartProgress" FormName="payment-contract">
+                <DataAnnotationsValidator />
+
+                <div class="form-group customize">
+                    <label for="clientAddress">Item ID:</label>
+                    <InputText id="clientAddress" class="form-control" @bind-Value="contractModel.ItemId" />
+                    <ValidationMessage For="@(() => contractModel.ItemId)" />
+                </div>
+
+                <div class="form-group customize">
+                    <label for="invoiceId">Description of the item:</label>
+                    <InputText id="invoiceId" class="form-control" @bind-Value="contractModel.Description" />
+                    <ValidationMessage For="@(() => contractModel.Description)" />
+                </div>
+
+@*                 <div class="form-group customize">
+                    <label for="invoiceId">Whether the item complies with regulations:</label>
+                    <InputCheckbox id="invoiceId" class="form-control" @bind-Value="contractModel.IsCompliant" />
+                    <ValidationMessage For="@(() => contractModel.IsCompliant)" />
+                </div> *@
+
+                <div class="form-group customize" style="margin-bottom: 20px">
+                    <label for="invoiceId">The amount of customs duty to be paid (in Wei):</label>
+                    <InputNumber id="invoiceId" class="form-control" @bind-Value="contractModel.CustomsDuty" />
+                    <ValidationMessage For="@(() => contractModel.CustomsDuty)" />
+                </div>
+
+                <button type="submit" class="btn-submit" style="margin: auto; width: auto">Generate</button>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <LoadingComponent RedirectPage="compliance-contract" />
+}
+
+@code {
+    ComplianceContractModel contractModel = new();
+    private bool showProgressBar = false;
+
+    private void StartProgress()
+    {
+        showProgressBar = true;
+    }
+}

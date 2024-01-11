@@ -1,0 +1,67 @@
+﻿@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+<div class="progress-container">
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Success" Value="@progressValue" Mode="ProgressBarMode.Determinate" Style="width: 700px; height: 30px; border-radius: 5px;" />
+    <div style="margin-top: 15px">@currentStatus</div>
+</div>
+
+@code {
+    [Parameter]
+    public string RedirectPage { get; set; }
+    private System.Threading.Timer timer;
+    private int progressValue = 0;
+    private string currentStatus = "Starting...";
+
+    protected override void OnInitialized()
+    {
+        timer = new System.Threading.Timer(TimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+        progressValue = 0;
+        timer?.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private async void TimerCallback(object state)
+    {
+        if (progressValue < 100)
+        {
+            progressValue += 20;
+            UpdateStatusText(progressValue);
+            await InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            progressValue = 0;
+            timer?.Change(Timeout.Infinite, Timeout.Infinite);
+            navigationManager.NavigateTo(RedirectPage);
+        }
+    }
+
+    private void UpdateStatusText(int progress)
+    {
+        if (progress <= 20)
+        {
+            currentStatus = "Generating solidity code ....";
+        }
+        else if (progress <= 40)
+        {
+            currentStatus = "Compiling and verifying ...";
+        }
+        else if (progress <= 60)
+        {
+            currentStatus = "Customizing based on inputs ...";
+        }
+        else if (progress <= 80)
+        {
+            currentStatus = "Applying unit tests ...";
+        }
+        else
+        {
+            currentStatus = "Completed! Redirecting ...";
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

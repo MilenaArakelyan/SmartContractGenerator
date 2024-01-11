@@ -1,0 +1,15 @@
+C:\Users\Armen\source\repos\ProjectS5.Core\bin\Debug\net8.0\ProjectS5.Core.deps.json
+C:\Users\Armen\source\repos\ProjectS5.Core\bin\Debug\net8.0\ProjectS5.Core.dll
+C:\Users\Armen\source\repos\ProjectS5.Core\bin\Debug\net8.0\ProjectS5.Core.pdb
+C:\Users\Armen\source\repos\ProjectS5.Core\bin\Debug\net8.0\ProjectS5.Data.dll
+C:\Users\Armen\source\repos\ProjectS5.Core\bin\Debug\net8.0\ProjectS5.Data.pdb
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.csproj.AssemblyReference.cache
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.AssemblyInfoInputs.cache
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.AssemblyInfo.cs
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.csproj.CoreCompileInputs.cache
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.csproj.CopyComplete
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.dll
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\refint\ProjectS5.Core.dll
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ProjectS5.Core.pdb
+C:\Users\Armen\source\repos\ProjectS5.Core\obj\Debug\net8.0\ref\ProjectS5.Core.dll
